@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>无限轮播</title>
+  <style>
+    .carousel {
+      position: relative;
+      width: 320px;
+      height: 180px;
+      margin: 30px auto;
+      overflow: hidden;
+    }
+    .db {
+      width: 640px;
+    }
+    .carousel ul,
+    .carousel li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .carousel .img-ct {
+      position: absolute;
+    }
+    .carousel .img-ct:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+    .carousel .img-ct>li {
+      float: left;
+    }
+    .carousel .img-ct img {
+      width: 320px;
+      height: 180px;
+    }
+
+    .carousel .arrow {
+      position: absolute;
+      top: 50%;
+      margin-top: -15px;
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid #fff;
+      line-height: 30px;
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+    }
+    .carousel .arrow:hover {
+      opacity: 0.8;
+    }
+    .carousel .pre {
+      left: 10px;
+    }
+    .carousel .next {
+      right: 10px;
+    }
+    .carousel .bullet {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      font-size: 0;
+      z-index: 1;
+      text-align: center;
+    }
+    .carousel .bullet >li {
+      display: inline-block;
+      width: 30px;
+      height: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 0 3px;
+      cursor: pointer;
+    }
+    .carousel .bullet >li.active {
+      background: #ccc;
+    }
+  
+  </style>
+</head>
+<body>
+  <div class="carousel db">
+    <ul class="img-ct">
+      <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/1.jpg" alt=""></a></li>
+      <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg" alt=""></a></li>
+      <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg" alt=""></a></li>
+      <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg" alt=""></a></li>
+    </ul>
+    <a class="pre arrow" href="#"><</a>
+    <a class="next arrow"href="#">></a>
+    <ul class="bullet">
+      <li class="active"></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+
+  <div class="carousel">
+      <ul class="img-ct">
+        <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/1.jpg" alt=""></a></li>
+        <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg" alt=""></a></li>
+        <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg" alt=""></a></li>
+        <li><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg" alt=""></a></li>
+      </ul>
+      <a class="pre arrow" href="#"><</a>
+      <a class="next arrow"href="#">></a>
+      <ul class="bullet">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+
+    <div class="carousel">
+        <ul class="img-ct">
+          <li><a href="#"><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3634460634,4091562679&fm=26&gp=0.jpg" alt=""></a></li>
+          <li><a href="#"><img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1046169520,3946611923&fm=26&gp=0.jpg" alt=""></a></li>
+          <li><a href="#"><img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=117084850,3379184413&fm=26&gp=0.jpg" alt=""></a></li>
+          <li><a href="#"><img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=926673036,127798979&fm=26&gp=0.jpg" alt=""></a></li>
+        </ul>
+        <a class="pre arrow" href="#"><</a>
+        <a class="next arrow"href="#">></a>
+        <ul class="bullet">
+          <li class="active"></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+    </div>
+  <script>
+    function Carousel($ct){
+      this.init($ct)
+      this.bind()
+    }
+    Carousel.prototype = {
+      init: function($ct){
+        this.$ct = $ct
+        this.$imgCt
+        this.$imgCt   = this.$ct.find('.img-ct')
+				this.$imgs    = this.$ct.find('.img-ct >li')
+				this.$preBtn  = this.$ct.find('.pre')
+				this.$nextBtn = this.$ct.find('.next')
+				this.$bullets = this.$ct.find('.bullet li')
+
+        this.imgWidth = this.$imgs.width()
+        this.imgCount = this.$imgs.length
+        this.index = 0
+        this.isAnimate = false
+        
+        this.$imgCt.append(this.$imgs.first().clone())
+        this.$imgCt.prepend(this.$imgs.last().clone())
+        this.$imgCt.width((this.imgCount + 2)*this.imgWidth)
+        this.$imgCt.css('left', -this.imgWidth)
+      },
+      bind: function(){
+        var _this = this
+        this.$preBtn.on('click', function(){
+          _this.playPre(1)
+        })
+        this.$nextBtn.on('click', function(){
+          _this.playNext(1)
+        })
+        this.$bullets.on('click', function(){
+          var index = $(this).index()
+          if(_this.index > index){
+            _this.playPre(_this.index - index)
+          }else{
+            _this.playNext(index - _this.index)
+          }
+        })
+      },
+      playNext: function(len){
+        if(this.isAnimate) return
+        this.isAnimate = true
+        var _this = this
+        this.$imgCt.animate({
+          left: '-='+this.imgWidth*len
+        },function(){
+          _this.index += len
+          if(_this.index === _this.imgCount){
+            _this.$imgCt.css('left', -_this.imgWidth)
+            _this.index = 0
+          }
+          _this.setBullet()
+          _this.isAnimate = false
+        })
+      },
+      playPre: function(len){
+        if(this.isAnimate) return
+        this.isAnimate = true
+        var _this = this
+        this.$imgCt.animate({
+          left: '+='+this.imgWidth*len
+        },function(){
+          _this.index -=len
+          if(_this.index < 0 ){
+            _this.$imgCt.css('left', -_this.imgWidth * _this.imgCount)
+            _this.index =  _this.imgCount - 1
+          }
+          _this.setBullet()
+          _this.isAnimate = false
+        })
+      },
+      setBullet: function(){
+        this.$bullets.eq(this.index).addClass('active')
+            .siblings().removeClass('active')
+      },
+      autoPlay: function(){
+        var _this = this
+        this.autoClock = setInterval(function(){
+          _this.playNext(1)
+        },1000)
+      },
+      stopAuto: function(){
+        clearInterval(this.autoClock)
+      }
+    }
+    var a = new Carousel($('.carousel').eq(0))
+    var b = new Carousel($('.carousel').eq(1))
+    var c = new Carousel($('.carousel').eq(2))
+  
+  
+  </script>
+</body>
+</html>
